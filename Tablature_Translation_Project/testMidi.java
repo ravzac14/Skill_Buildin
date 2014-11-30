@@ -13,7 +13,7 @@ public class testMidi {
 	public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
 	public static void main(String[] args) throws Exception {
-		Sequence sequence = MidiSystem.getSequence(new File("test.mid"));
+		Sequence sequence = MidiSystem.getSequence(new File("samples/test.mid"));
 		
 		int trackNumber = 0;
 		for (Track track : sequence.getTracks()) {

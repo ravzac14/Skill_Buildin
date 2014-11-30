@@ -5,7 +5,7 @@ public class TestSoundMidiLib{
 	
 	public static void main(String[] args) throws Exception{
 
-		File tester = new File("test.mid");
+		File tester = new File("samples/test.mid");
 		Sequence sequence = MidiSystem.getSequence(tester);
 		
 		
