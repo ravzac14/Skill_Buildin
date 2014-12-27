@@ -35,6 +35,7 @@ public abstract class Sprite {
     public abstract void update();
 
     //did this sprite collide with another sprite
-    public boolean collide(Sprite other){ return false; }
+    public boolean collides(Sprite other){ return false; }
 
+    public Node getNode(){ return node; }
 }

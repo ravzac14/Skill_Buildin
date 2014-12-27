@@ -5,7 +5,6 @@
 package gameengine;
 
  import javafx.animation.Timeline;
- //import javafx.animation.TimelineBuilder;
  import javafx.animation.KeyFrame;
  import javafx.animation.Animation;
  import javafx.event.EventHandler;
@@ -92,7 +91,7 @@ public abstract class GameWorld {
         //check each sprite against each other sprite
         for (Sprite spr1 : sm.getCollisionsToCheck()){
             for (Sprite spr2 : sm.getAllSprites()){
-                if (handleCollision(spr1, spr2)){
+                if (!(spr2 == spr1) && (handleCollision(spr1, spr2))){
                     //the following break statement helps optimize collisions
                     //it means only one sprite can collide with one other
                     //comment the break for more accurate collisions
@@ -128,10 +127,10 @@ public abstract class GameWorld {
     }
 
     //return the sprite manager
-    protected SpriteManager getSpriteManager(){ return this.sm; }
+    public SpriteManager getSpriteManager(){ return sm; }
 
     //return the Scene or game surface
-    protected Scene getGameSurface(){ return this.gameSurface; }
+    public Scene getGameSurface(){ return this.gameSurface; }
 
     //sets the scene 
     protected void setGameSurface(Scene gs){ this.gameSurface = gs; }
