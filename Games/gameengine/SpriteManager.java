@@ -23,6 +23,9 @@ public class SpriteManager {
     //a global single threaded list used to cleanup sprite objects
     private final static Set<Sprite> CLEAN_UP_SPRITES = new HashSet<Sprite>();
 
+    //a global single threaded list used to add in sprite objects
+    private final static Set<Sprite> ADD_IN_SPRITES = new HashSet<Sprite>();
+
     //return all actors
     public List<Sprite> getAllSprites(){ return this.GAME_ACTORS; }
 
@@ -48,6 +51,15 @@ public class SpriteManager {
         }
     }
 
+    //Add sprite objects to the list to be added
+    public void addSpritesToBeAdded(Sprite... sprites){
+        if (sprites.length > 1){
+            ADD_IN_SPRITES.addAll(Arrays.asList((Sprite[]) sprites));
+        } else {
+            ADD_IN_SPRITES.add(sprites[0]);
+        }
+    }
+
     //returns a list of sprite objects to assist in collision checks
     //this is a temporary and a is a copy of all current sprite objects 
     // (cope of GAME_ACTORS)
@@ -66,7 +78,10 @@ public class SpriteManager {
     public void cleanupSprites(){
         //remove from actors list
         GAME_ACTORS.removeAll(CLEAN_UP_SPRITES);
+        //add the queued sprites
+        GAME_ACTORS.addAll(ADD_IN_SPRITES);
         //reset the clean up sprites
+        ADD_IN_SPRITES.clear();
         CLEAN_UP_SPRITES.clear();
     }
 }

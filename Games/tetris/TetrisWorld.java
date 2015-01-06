@@ -12,12 +12,12 @@ import gameengine.GameWorld;
 import gameengine.Sprite;
 import javafx.animation.Timeline;
 import javafx.event.EventHandler;
+import javafx.scene.input.*;
+import javafx.event.Event;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Button;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -27,18 +27,31 @@ import static javafx.animation.Animation.Status.STOPPED;
 
 public class TetrisWorld extends GameWorld {
     
-    //Game wide vars
+    /* TetrisWorld's fields:
+     * @var: int gamespeed should be gamewide and public, so the various updates (specifically when we pop a row of deadblocks) can increase it
+     * @var: double HEIGHT is the height of the game window, should be 20x the height of a pixel (set in Block)
+     * @var: double WIDTH is the width of the game window, should be 10x the width of a pixel (set in Block)    */
     public static int gamespeed = 0;
 
-    //Panels height and width
     private static final double HEIGHT = 600;
-    private static final double WIDTH = 300;   //should fit 10 blocknodes wide and 20 high
+    private static final double WIDTH = 300; 
 
+    /* TetrisWorld's constructor:
+     * @param: int fps, which sets the frame per second (how fast the frames repaint)
+     * @param: String title, the window's title */
     public TetrisWorld(int fps, String title){
         super(fps,title);
     }
 
-    //initialize the game world by adding some sprite objects
+    /* TetrisWorld's initialize method:
+     *      -initializes the game world by adding some sprite objects
+     *      -sets the background of the window
+     *      -starts a new block at the top
+     *      -makes a label (for gamespeed aka level of difficulty)
+     *      -makes a TODO:pause button (which is kinda broken actually)
+     *      -sets the key handlers for the scene (which just calls methods defined in the sprites)
+     *      -writes it all to the scene
+     * @param: final Stage primaryStage */
     @Override
     public void initialize(final Stage primaryStage){
         //Set the window title
@@ -48,6 +61,8 @@ public class TetrisWorld extends GameWorld {
         setSceneNodes(new Group());
         setGameSurface(new Scene(getSceneNodes(), WIDTH, HEIGHT, Color.BLACK));
         primaryStage.setScene(getGameSurface());
+        
+        getGameSurface().getStylesheets().add(TetrisWorld.class.getResource("style/bg.css").toExternalForm());
 
         //Start a block
         generateBlock();
@@ -69,57 +84,105 @@ public class TetrisWorld extends GameWorld {
                     break;
             }
         });
-        
-        //making buttons to do left and right, down goes faster, up rotates
-
 
         //making a menu to hold the label for speed and the pause button
         VBox menu = new VBox(5); 
         //menu.setPrefWidth(10); //dunno if this is necessary
         menu.getChildren().addAll(pause, speed);
         
+        //Add the handler for the nodes
+        //only does something is the game is "running"
+        getSceneNodes().setOnKeyPressed(new EventHandler<KeyEvent>(){ //KeyPressed
+            @Override
+            public void handle(KeyEvent ke){
+                if (getGameLoop().getStatus() == RUNNING){
+                    for (Sprite spr : getSpriteManager().getAllSprites()){
+                        spr.handleKeyPressed(ke.getCode());
+                    }
+                }
+            }
+        });
+        getSceneNodes().setOnKeyReleased(new EventHandler<KeyEvent>(){ //KeyRelease
+            @Override
+            public void handle(KeyEvent ke){
+                if (getGameLoop().getStatus() == RUNNING){ 
+                    for (Sprite spr : getSpriteManager().getAllSprites()){
+                        spr.handleKeyReleased(ke.getCode());
+                    }
+                }
+            }
+        });
+        getSceneNodes().setOnKeyTyped(new EventHandler<KeyEvent>(){ //KeyTyped
+            @Override
+            public void handle(KeyEvent ke){
+                if (getGameLoop().getStatus() == RUNNING){ 
+                    for (Sprite spr : getSpriteManager().getAllSprites()){
+                        spr.handleKeyTyped(ke.getCode());
+                    }
+                }
+            }
+        });
+
         //lay down the controls 
         getSceneNodes().getChildren().add(menu);
     }//initialize
 
-    private void generateBlock(){
-        Block block = new Block(BlockType.randomBlockType(), (double)WIDTH / 2, (double)0);
-        getSpriteManager().addSprites(block);
+    /* TetrisWorld's generateBlock method:
+     *      responsible for making new live blocks
+     * @return & @param: NONE   */
+    protected void generateBlock(){
+        Block block = new Block(this, BlockType.randomBlockType(), (double)WIDTH / 2, (double)0);
+        getSpriteManager().addSpritesToBeAdded(block);
         for (Rectangle pixel : block.getPixels()){
             getSceneNodes().getChildren().add(pixel); 
         }
     }
+    
+    //TODO: might want to increment gamespeed elsewhere
 
-    //I think in this case all "updates" ie moving and rotating etc are handled in the sprites update()
+    /* TetrisWorld's handleUpdate method:
+     *      -in this case all "updates" ie moving and rotating etc are handled in the sprites eventHandlers
+     *      -this is just gravity (scaled by gamespeed)
+     *      -overrides GameWorld's handleUpdates (which also just passed the buck)
+     * @param: Sprite spr   */
     @Override
     protected void handleUpdate(Sprite spr){
-        spr.update();
+        if (spr instanceof Block){
+            Block b = (Block)spr;
+            b.update(getSpriteManager());
+        }
     }
     
-    //Should only be colliding with the edge or a dead block..make another 4 sprites of dead blocks..that can't move (unless they pop a row)
+    /* TetrisWorld's handleCollision method:
+     *      -Should only be colliding with the edge or a dead block..make another 4 sprites of dead blocks..that can't move (unless they pop a row)
+     *      -overrides GameWorld's handleCollision method (which also just passed the buck)
+     *      -removes the live block and adds a deadblock if block2block collision occurs
+     * @param: Sprite spr1, the sprite to check against all others (should be a Block class)
+     * @param: Sprite spr2, the sprite in question, should be dead
+     * @return: boolean, if there is indeed a collision */
     @Override
     protected boolean handleCollision(Sprite spr1, Sprite spr2){
         if (spr1.collides(spr2)){
-            Block b = (Block)spr1;
-            for (Rectangle pixel : b.getPixels()){
-                getSpriteManager().addSprites(new DeadBlock(pixel));
-            }
-            getSpriteManager().addSpritesToBeRemoved(spr1);
-            gamespeed++;                                        //Might want to not do this here
-            generateBlock();
             return true;
         }
         return false;
     }
 
+    /* TetrisWorld's cleanupSprites method:
+     *      remove sprites from the scene and backend store
+     * @return & @param: NONE      */
     @Override
     protected void cleanupSprites(){
-        //remove from the scene and backend store
         super.cleanupSprites();
-        //maybe need to do more here
+        //TODO: maybe need to do more here
     }
-
+    
+    /* TetrisWorld's getWidth window width accessor method:
+     * @return double width */
     public static double getWidth(){ return WIDTH; }
-
+    
+    /* TetrisWorld's getHeight window height accessor method:
+     * @return double height */
     public static double getHeight(){ return HEIGHT; }
+
 }//TetrisWorld

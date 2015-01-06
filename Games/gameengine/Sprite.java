@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javafx.animation.Animation;
 import javafx.scene.Node;
+import javafx.event.Event;
+import javafx.scene.input.*;
 
 public abstract class Sprite {
 
@@ -32,10 +34,18 @@ public abstract class Sprite {
     public boolean isDead = false;
 
     //updates the sprite objects velocity or animations
-    public abstract void update();
+    public abstract void update(SpriteManager sm);
 
     //did this sprite collide with another sprite
     public boolean collides(Sprite other){ return false; }
 
     public Node getNode(){ return node; }
+
+    public abstract void handleKeyPressed(KeyCode c);
+
+    public abstract void handleKeyReleased(KeyCode c);
+    
+    public abstract void handleKeyTyped(KeyCode c);
+
+
 }

@@ -2,6 +2,29 @@
 @author         zjr
 @date           12/21/14
 
+TODO:
+* Fix window collisions
+    * S-0:
+        * Right side misses 1
+        * Left side misses 2
+    * S-1:
+        * Right side misses 0 and 1
+    * L-0:
+        * Left side misses 1 and 2
+    * L-2:
+        * Right side misses 1 and 2
+    * T-0: 
+        * Left side misses 1
+    * T-1:
+        * Right side misses 0
+    * Z-1:
+        * Right side misses 0 and 1
+** Fix falling through the bottom if you hold DOWN a bunch during the descent
+* Fix block collisions (or make the more reliable
+* Clean up the codez
+* Add sound
+
+
 Goal(s): 
     * Learn the basic framework of game programming, using javafx. 
     * Implement tetris in javafx (more detailed design notes below)

@@ -10,6 +10,8 @@ package gameengine;
  import javafx.event.EventHandler;
  import javafx.event.ActionEvent;
  import javafx.event.Event;
+ import javafx.scene.input.InputEvent;
+ import javafx.scene.input.KeyEvent;
  import javafx.scene.Group;
  import javafx.scene.Scene;
  import javafx.stage.Stage;

@@ -7,28 +7,51 @@
 package tetris;
 
 import gameengine.GameWorld;
+import gameengine.SpriteManager;
 import gameengine.Sprite;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Stop;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import java.util.ArrayList;
+import javafx.scene.input.KeyCode;
+
+//TODO: fix window collision, broken by rotations etc. in blockType mostly
+//TODO: fix block collision
 
 public class Block extends Sprite {
-    
-    private final double W = 30;   //Width of each pixel (should be a 10th of the stage width and a 20th of the height)
-    private final ArrayList<Rectangle> PIXELS = new ArrayList<Rectangle>(4);    //Each block are comprised of 4 squares in different configurations..        
+   
+    /*  Block's fields: 
+     *
+     *  @var: double W is the height and width of each "pixel" 
+     *            should be 1/10 of the stage width and 1/20 of the stage height TODO maybe should add the max height of a block?
+     *  @var: ArrayList<Rectangle> PIXELS is the array of Rectangle nodes (called pixels here) that can be iterated through do move etc 
+     *  @var: BlockType W is used for other sprites to get the blocktype things     
+     *  @var: TetrisWorld localWorld is the world that this block lives in
+     *  @var: boolean dead is global so that the block doesnt keep updating 
+     *  @var: int position, depends on the blocktype but can only be a few*/
+    private final double W = 30;   
+    private final ArrayList<Rectangle> PIXELS = new ArrayList<Rectangle>(4);           
+    private final BlockType bt;
+    private final TetrisWorld localWorld;
+    private boolean dead = false;
+    private int position = 0;
 
-    public Block(BlockType bt, double xPos, double yPos){
-        PIXELS.add(new Rectangle(W,W));                                             //in this case shapes in index 0,1,2,3 of this array list
-        PIXELS.add(new Rectangle(W,W));
-        PIXELS.add(new Rectangle(W,W));
-        PIXELS.add(new Rectangle(W,W));
-        
-        switch (bt){    //Logic for pixel configuration based on BlockType
+    /* Block's constructor:
+     * 
+     * @param: BlockType bt, a member of the enum BlockType, to dictate the shape of the block
+     * @param: double xPos and yPos should always be at the top ~50% of the stages X value */
+    public Block(TetrisWorld tw, BlockType bt, double xPos, double yPos){                                       
+        this.localWorld = tw;
+        this.bt = bt;
+
+        for (int j = 0; j < 4; j++){
+            Rectangle r = new Rectangle(W,W);
+            PIXELS.add(r);         
+        }
+
+        switch (bt){ 
             case I: for (int i = 1; i <= PIXELS.size(); i++){
                         PIXELS.get(i-1).setX(xPos + (i * W));
                         PIXELS.get(i-1).setY(yPos);
@@ -71,43 +94,345 @@ public class Block extends Sprite {
                     PIXELS.get(3).setX(xPos + (W*2)); PIXELS.get(3).setY(yPos + W);     //pixel[3]
                     break;
         }//switch
-        
-        for (Rectangle pixel : PIXELS){ pixel.setFill(bt.getColor()); }  //settin the fill based on the blocktype
+       
+        //settin the fill based on the blocktype
+        for (Rectangle pixel : PIXELS){ 
+            pixel.setFill(bt.getColor()); 
+            pixel.setStroke(Color.BLACK);
+            pixel.setSmooth(true);
+        }
 
     }//BlockConstructor
     
-    //return the arraylist of pixel nodes
+    /* Block's getPixel method:
+     *      Accessor for the Block's Pixel array
+     * @return: arraylist of pixel nodes */
     public ArrayList<Rectangle> getPixels(){ return this.PIXELS; }
-    
+   
+
+    //TODO(zack): Turn live block into individual dead blocks..WITHOUT UPSETTING THE BALANCE OF FORCE
+    /* Block's update method:
+     *      -This is called by the main game driver (TetrisWorld extending GameWorld) to update (ie. move) each frame 
+     *      -if we've hit the bottom..turn them into dead blocks
+     * @param: SpriteManager sm, to do stuff  */
     @Override
-    public void update(){
-        //MOVINNNN ONNNN
+    public void update(SpriteManager sprM){
+        ArrayList<DeadBlock> toAdd = new ArrayList<DeadBlock>();
         for (int i = 3; i >= 0; i--){
-            if (!(((PIXELS.get(i).getY() >= 0) && (PIXELS.get(i).getY()) <= (TetrisWorld.getHeight() - W)))){
- //               for (Rectangle pixel : PIXELS){ //we've hit the bottom..turn them into dead blocks
- //                   TetrisWorld.getSpriteManager().addSprites(new DeadBlock(pixel));
-   //             }
-//                TetrisWorld.getSpriteManager().addSpritesToBeRemoved(this);
-                i = -100; //poor mans break..
+            if(!dead){
+                if (!(((PIXELS.get(i).getY() >= 0) && (PIXELS.get(i).getY()) <= (localWorld.getHeight() - W)))){
+                    sprM.addSpritesToBeAdded(new DeadBlock(getW(), getBlockType().getColor(), getPixels().get(i).getX(), getPixels().get(i).getY()));       
+                    dead = true;
+                }else{
+                    PIXELS.get(i).setY(PIXELS.get(i).getY() + (TetrisWorld.gamespeed+1));
+                }
             }else{
-                PIXELS.get(i).setY(PIXELS.get(i).getY() + (TetrisWorld.gamespeed+1));
-            }
-        }                                           //Might be all we need to do
+                sprM.addSpritesToBeAdded(new DeadBlock(getW(), getBlockType().getColor(), getPixels().get(i).getX(), getPixels().get(i).getY()));       
+            } 
+        }    
+        if (dead){
+            sprM.addSpritesToBeRemoved(this);
+            localWorld.generateBlock();
+        }
+    }
+    
+    /* Block's handleKeyPressed method:
+     *      This should be the only event handler needed for the sprites, called by the scene's event handling methods
+     * @param: KeyCode c */
+    public void handleKeyPressed(KeyCode c){
+        switch(c){
+            case UP:{                   
+                rotate();
+            } break;
+            
+            case DOWN:{ //accelerate down
+                if(!(PIXELS.get(0).getY() + getBlockType().getHeight() >= localWorld.getHeight())){
+                    for(int i = 3; i >= 0; i--){
+                        double currentY = PIXELS.get(i).getY();
+                        PIXELS.get(i).setY(currentY + 10);
+                    }
+                }
+            } break;
+                    
+            case RIGHT:{//move right
+                if(!((PIXELS.get(getBlockType().getRightmost()).getX() + W >= localWorld.getWidth()))){
+                    for(int i = 3; i >= 0; i--){
+                        double currentX = PIXELS.get(i).getX();
+                        PIXELS.get(i).setX(currentX + W);
+                    }
+                }
+            } break;
+                    
+            case LEFT:{ //move left
+                if(!((PIXELS.get(getBlockType().getLeftmost()).getX()) <= 0)){
+                    for(int i = 0; i <= 3; i++){
+                        double currentX = PIXELS.get(i).getX();
+                        PIXELS.get(i).setX(currentX - W);
+                    }
+                }
+            } break;
+                    
+            default:{   //do nothing
+            } break;
+        }
+    }//handleKeyPress
+
+    /* Block's handleKeyReleased method:
+     *      Probably doesn't have to do anything for tetris
+     * @param: KeyCode c */
+    public void handleKeyReleased(KeyCode c){
+    }
+    
+    /* Block's handleKeyTyped method:
+     *      Probably doesn't have to do anything for tetris
+     * @param: KeyCode c */
+    public void handleKeyTyped(KeyCode c){
     }
 
+    /* Block's collides method:
+     *      -Called by the game driver's checkCollisions method, checks if the liveBlock collides with a DeadBlock (and should then die)
+     *      -Checks if any of this blocks pixels are in any other blocks pixels
+     *      -other (the param) has to be a deadblock...no way you can run into another live block
+     * @return: boolean
+     * @param: Sprite other */
     @Override
     public boolean collides(Sprite other){
-        //other has to be a deadblock...no way you can run into another live block
         DeadBlock db = (DeadBlock)other;
-        //check if any of this blocks pixels are in any other blocks pixels
-        for (Rectangle pixel : PIXELS){                                                                         //#######$$$$$ POTENTIAL FOR ONE OFFS HERE ################
-            if (((pixel.getX() > (db.getPixel().getX() - W)) && (pixel.getX() < (db.getPixel().getX() + W)))) {     //If its within W (blockwidth) of the other block
-                if (pixel.getY() >= db.getPixel().getY()){                                                       //and is >= the same depth as the other block
-                    return true;                                                                                //Collision indeed
+        for (Rectangle pixel : PIXELS){                                                                             //TODO:$$$$$ POTENTIAL FOR ONE OFFS HERE ################
+            if (((pixel.getX() >= (db.getPixel().getX() - W)) && (pixel.getX() < (db.getPixel().getX() + W)))) {     //If its within W (blockwidth) of the other block
+                if (pixel.getY() >= db.getPixel().getY() + W){                                                          //and is >= the same depth as the other block
+                    dead = true;
+                    return true;                                                                                    //Collision indeed
                 }
             }
         }
         return false; //otherwise no collision
     }
 
+    /* Block's BlockType accessor method:
+     *      This is important so that DeadBlocks can get the block type stuff, like color
+     * @return: BlockType bt    */
+    public BlockType getBlockType(){ return this.bt; }
+
+    /* Block's W accessor method:
+     *      Important because this is how you grab every pixels dimenions (x and y)         
+     * @return: double W    */
+    public double getW(){ return this.W; }
+
+    /* Block's getNextPosition method:
+     *      Handles the possible positions for each block types
+     *      Adjusts the global position var
+     * @return: int nextposition    */
+    public int getNextPosition(){
+        switch(bt){
+            case I:
+                if (position == 1){ 
+                    position = 0;
+                    break;
+                } else {
+                    return ++position;
+                }
+            case J:
+                if (position == 3){ 
+                    position = 0;
+                    break;
+                } else {
+                    return ++position;
+                }
+            case L:
+                if(position == 3){ 
+                    position = 0;
+                    break;
+                } else {
+                    return ++position;
+                }
+            case O:
+                break;  //O doesn't have more than one position
+            case S:
+                if (position == 1){ 
+                    position = 0;
+                    break;
+                } else {
+                    return ++position;
+                } 
+            case T:
+                if (position == 3){ 
+                    position = 0;
+                    break;
+                } else {
+                    return ++position;
+                }
+            case Z:
+                if (position == 1){ 
+                    position = 0;
+                    break;
+                } else {
+                    return ++position;
+                }
+            default: 
+                return ++position;
+        }
+        return position;
+    }
+
+    /* Block's rotate method:
+     *      -TODO(zack): Is there a smarter way to do this, rather than just cases?
+     *      -checks and then moves to the next position
+     * @return& @param: NONE */
+    public void rotate(){
+        int nextPosition = getNextPosition();
+        bt.checkRotate(nextPosition);
+        double bx = PIXELS.get(0).getX();   //get blocks x and y
+        double by = PIXELS.get(0).getY();
+        
+        switch(bt){
+            case I:{
+                if (nextPosition == 1){
+                    PIXELS.get(1).setX(bx);             //set new xs   
+                    PIXELS.get(2).setX(bx);
+                    PIXELS.get(3).setX(bx);
+                    PIXELS.get(1).setY(by + W);         //set new ys
+                    PIXELS.get(2).setY(by + W*2);   
+                    PIXELS.get(3).setY(by + W*3);
+                } else if (nextPosition == 0){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx + W*2);   
+                    PIXELS.get(3).setX(bx + W*3);
+                    PIXELS.get(1).setY(by);             //set new ys
+                    PIXELS.get(2).setY(by);
+                    PIXELS.get(3).setY(by);
+                }
+            } break;
+            case J:{
+                if (nextPosition == 1){
+                    PIXELS.get(1).setX(bx - W);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx - W);
+                    PIXELS.get(1).setY(by);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by + W*2);
+                } else if (nextPosition == 2){
+                    PIXELS.get(1).setX(bx);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx - W*2);
+                    PIXELS.get(1).setY(by - W);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by - W);
+                } else if (nextPosition == 3){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx + W);   
+                    PIXELS.get(3).setX(bx + W);
+                    PIXELS.get(1).setY(by);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by - W*2);
+                } else if (nextPosition == 0){
+                    PIXELS.get(1).setX(bx);         //set new xs
+                    PIXELS.get(2).setX(bx + W);   
+                    PIXELS.get(3).setX(bx + W*2);
+                    PIXELS.get(1).setY(by + W);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by + W);
+                }
+            } break;    
+            case L:{
+                if ( nextPosition == 0){
+                    PIXELS.get(1).setX(bx - W*2);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx);
+                    PIXELS.get(1).setY(by - W);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by - W);
+                } else if (nextPosition == 1){
+                    PIXELS.get(1).setX(bx - W);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx - W);
+                    PIXELS.get(1).setY(by - W*2);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by);
+                } else if (nextPosition == 2){
+                    PIXELS.get(1).setX(bx + W*2);         //set new xs
+                    PIXELS.get(2).setX(bx + W);   
+                    PIXELS.get(3).setX(bx);
+                    PIXELS.get(1).setY(by - W);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by - W);
+                } else if (nextPosition == 3){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx + W);   
+                    PIXELS.get(3).setX(bx + W);
+                    PIXELS.get(1).setY(by + W*2);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by);
+                }
+            } break;
+            case O:{    //does no rotating
+            } break;
+            case S:{
+                if (nextPosition == 0){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx);
+                    PIXELS.get(1).setY(by);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by + W);
+                } else if (nextPosition == 1){
+                    PIXELS.get(1).setX(bx);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx - W);
+                    PIXELS.get(1).setY(by + W);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by);
+                }
+            } break;
+            case T:{
+                if (nextPosition == 0){
+                    PIXELS.get(1).setX(bx - W);         //set new xs
+                    PIXELS.get(2).setX(bx);   
+                    PIXELS.get(3).setX(bx + W);
+                    PIXELS.get(1).setY(by + W);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by + W);
+                } else if (nextPosition == 1){
+                    PIXELS.get(1).setX(bx - W);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx - W);
+                    PIXELS.get(1).setY(by - W);             //set new ys
+                    PIXELS.get(2).setY(by);
+                    PIXELS.get(3).setY(by + W);
+                } else if (nextPosition == 2){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx);   
+                    PIXELS.get(3).setX(bx - W);
+                    PIXELS.get(1).setY(by - W);             //set new ys
+                    PIXELS.get(2).setY(by - W);
+                    PIXELS.get(3).setY(by - W);
+                } else if (nextPosition == 3){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx + W);   
+                    PIXELS.get(3).setX(bx + W);
+                    PIXELS.get(1).setY(by + W);             //set new ys
+                    PIXELS.get(2).setY(by);
+                    PIXELS.get(3).setY(by - W);
+                }
+            } break;
+            case Z:{
+                if (nextPosition == 0){
+                    PIXELS.get(1).setX(bx + W);         //set new xs
+                    PIXELS.get(2).setX(bx + W);   
+                    PIXELS.get(3).setX(bx + W*2);
+                    PIXELS.get(1).setY(by);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by + W);
+                } else if (nextPosition == 1){
+                    PIXELS.get(1).setX(bx);         //set new xs
+                    PIXELS.get(2).setX(bx - W);   
+                    PIXELS.get(3).setX(bx - W);
+                    PIXELS.get(1).setY(by + W);             //set new ys
+                    PIXELS.get(2).setY(by + W);
+                    PIXELS.get(3).setY(by + W*2);
+                }
+            } break;
+            default:{}break;
+        }
+    }//rotate
 }//Block
