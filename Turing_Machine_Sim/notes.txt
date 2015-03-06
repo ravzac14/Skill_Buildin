@@ -1,0 +1,5 @@
+TODO: 
+* Make a turing machine class (with acceptable parameters)
+* Nail down display just for fun
+* 
+* Add the logic for simulating the turing machine (with input? testing for language acceptance?)

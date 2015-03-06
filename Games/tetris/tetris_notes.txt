@@ -7,22 +7,18 @@ TODO:
     * S-0:
         * Right side misses 1
         * Left side misses 2
-    * S-1:
-        * Right side misses 0 and 1
     * L-0:
         * Left side misses 1 and 2
-    * L-2:
-        * Right side misses 1 and 2
     * T-0: 
-        * Left side misses 1
-    * T-1:
-        * Right side misses 0
-    * Z-1:
-        * Right side misses 0 and 1
+        * Left side misses 0 1 2
+        * Right side missed 0 2 3
+    * j-0 & 3
+        * 2 or 3
 ** Fix falling through the bottom if you hold DOWN a bunch during the descent
 * Fix block collisions (or make the more reliable
 * Clean up the codez
 * Add sound
+* Add a background image (that changes with level?)
 
 
 Goal(s): 
