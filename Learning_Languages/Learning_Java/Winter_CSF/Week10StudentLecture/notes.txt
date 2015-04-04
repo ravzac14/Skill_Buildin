@@ -1,0 +1,16 @@
+Lecture: For arrays
+
+(28) Java arrays have base type and a fixed length, and their data can be accessed via
+their indices.
+
+To include:
+Array examples
+how to declare 1d arrays
+how to declare mulitdimensional arrays
+how to iterate through array data
+
+arrays to ArrayLists
+
+array.length
+array.type
+

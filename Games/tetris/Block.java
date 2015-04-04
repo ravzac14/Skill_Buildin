@@ -33,7 +33,7 @@ public class Block extends Sprite {
     private final ArrayList<Rectangle> PIXELS = new ArrayList<Rectangle>(4);           
     private final BlockType bt;
     private final TetrisWorld localWorld;
-    private boolean dead = false;
+    private boolean isDead = false;
     private int position = 0;
 
     /* Constructs a new block (composition of 4 shapes, so most of this constructs the shapes)
@@ -117,18 +117,19 @@ public class Block extends Sprite {
     public void update(SpriteManager sprM){
         ArrayList<DeadBlock> toAdd = new ArrayList<DeadBlock>();
         for (int i = 3; i >= 0; i--){
-            if(!dead){
+            if(!isDead){
                 if (!(((PIXELS.get(i).getY() >= 0) && (PIXELS.get(i).getY()) <= (localWorld.getHeight() - W)))){
                     sprM.addSpritesToBeAdded(new DeadBlock(getW(), getBlockType().getColor(), getPixels().get(i).getX(), getPixels().get(i).getY()));       
-                    dead = true;
+                    isDead = true;
                 }else{
-                    PIXELS.get(i).setY(PIXELS.get(i).getY() + (TetrisWorld.gamespeed+1));
+                    TetrisWorld.gamespeed += 1;
+                    PIXELS.get(i).setY(PIXELS.get(i).getY() + (TetrisWorld.gamespeed));
                 }
             }else{
                 sprM.addSpritesToBeAdded(new DeadBlock(getW(), getBlockType().getColor(), getPixels().get(i).getX(), getPixels().get(i).getY()));       
             } 
         }    
-        if (dead){
+        if (isDead){
             sprM.addSpritesToBeRemoved(this);
             localWorld.generateBlock();
         }
@@ -204,7 +205,7 @@ public class Block extends Sprite {
         for (Rectangle pixel : PIXELS){                                                                             //TODO:$$$$$ POTENTIAL FOR ONE OFFS HERE ################
             if (((pixel.getX() >= (db.getPixel().getX() - W)) && (pixel.getX() < (db.getPixel().getX() + W)))) {     //If its within W (blockwidth) of the other block
                 if (pixel.getY() >= db.getPixel().getY() + W){                                                          //and is >= the same depth as the other block
-                    dead = true;
+                    isDead = true;
                     return true;                                                                                    //Collision indeed
                 }
             }

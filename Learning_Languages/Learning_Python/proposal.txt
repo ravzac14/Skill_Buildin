@@ -1,0 +1,9 @@
+Good Morning,
+
+I am hoping to replace the hoomeworks with another project. Namely creating an IF (interactive fiction game) 
+through the use of PyF and Canopy. I will be writing the script in xml and the coding in python. I realize 
+this is a bit late, but I am hoping that will not be a problem. The files for my project (Brains) can be found
+in my repository (brains) which you both (Paul and Colin) have been made collaborators of.
+
+Thanks,
+Zack R.

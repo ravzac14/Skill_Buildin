@@ -1,0 +1,15 @@
+Name: Zack Raver
+CSF Evergreen, ravzac14
+Homework 3: Election prediction
+
+
+Collaboration:
+
+...
+
+Reflection:
+
+Problem 1: took awhile because I wasn't sure what the data looked like that I had as input. Once I figured that out, it was just a matter of accessing it and using it.
+
+
+Problem 2: This is giving me problems..despite seeming to get the correct dict, the order prevents the test from passing

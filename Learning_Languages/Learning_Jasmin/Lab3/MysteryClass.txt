@@ -1,0 +1,6 @@
+Zack Raver; ravzac14
+Arch Lab3A Mystery Class questions
+
+1) 5
+2) 0x13F
+3) isub, sipush, (the number 7), iand, invokevirtual

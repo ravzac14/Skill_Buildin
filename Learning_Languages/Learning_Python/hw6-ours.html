@@ -1,0 +1,80 @@
+Zack and REL
+
+
+Problem 3: For Loops
+
+While there are two main types of loops, while-loops and for-loops, for this problem, we will 
+be working with for-loops. The range() funtion is a common function used to set the number of 
+iterations the loop will run for. 
+
+Using a for-loop, give the sum for a(sub n) = a (sub n-1) + 5 
+where the first term is 1 and n = 100. 
+
+
+Problem 4: Writing and Calling Functions
+
+Write a newDivide(a, b) function that takes two parameters and then call it to divide:
+
+a) 10 / 2
+b) 57 / 0
+c) 26 / -4
+
+Recall that writing functions must start with "def" and may (as with this case) end with a return statement.
+
+
+Problem 5: Lists
+
+Lists have a set order, which means the different elements in a given list can be accessed by its index 
+(eg. listName[0] is the first element of a list). Lists can also be manipulated by various list-related functions
+that you can see using dir(list). 
+
+Initialize a list, sampleList[], to the value [0,1,2,3,4,5]. Using the list functions, 
+change the even numbers to the string version of the number (ie. 2 is two) and change the range from 0-5 to 1-8.
+
+
+Problem 6: Scopes
+
+Scopes are different planes of your programming workspace. You will use and change scopes when you use: 
+import, (nested) loops, functions, if/else statements
+
+Using your divide() function from Problem 4, execute:
+
+x = 0
+for i in range(5):
+  x = i
+  y = 4*x / x**2        #implement newDivide() function here instead of the "/"
+
+In how many scopes was x used? How many times did the program change scope?
+
+
+Problem 7: Dictionaries
+
+Using the list you created in Problem 5, make a dictionary that maps "odd" to the odd numbers and 
+"even" to the even numbers (eg. {1 : 'odd', 'two' : 'even'}.
+
+
+Expected Answers:
+
+p3. 5346; if you are near this number it could be that your loop ran one too many or one too few times. 
+    Check that the range is going from 1 (default is 0) and too the nth value (100). If you are having problms
+    finding any answer consider making each loop print i so you have a counter to check that your value is running
+    as you expect it to sum mathematically.
+
+p4. a. 5 b. Undif. c. -6.5; If you are having trouble with part b, keep in mind that you have to clarify in your function 
+    what to do when you ask it to divide by 0. If you are having trouble with part c, you may need to take into account 
+    float values vs. integer values.
+    
+p5. [1, two, 3, four, 5, six, 7, eight]; The range change is something to keep in mind from the get-go. You can use this 
+    information to immediately remove zero (using the list functions from dir(list)). Then, you can take the remaining 
+    even numbers and overwrite them using the assignment operator (=) (eg. sampleList[1] = "two"). Then you can appened 
+    remaining terms with the list.append() function.
+    
+p6. 3 scopes use x, and it changes 10 times; The scopes that use x are: 1. The main scope of the program. 
+    2. The scope of the for-loop and 3. The function call of newDivide(). Therefore, it follows that each time you iterate 
+    loop and each time you call the function within the loop, the value x is changing scope. Note, this is only possible if
+    x has previous existed in the scope you are jumping to. In this case, it is initialized in the main program, it is 
+    called in the function call and is inherited and overwritten each time you iterate the for-loop.
+  
+p7. {1 : "odd", "two" : "even", 3 : "odd", "four" : "even", 5 : "odd", "six" : "even", 7 : "odd", "eight" : "even"}; This
+    was mostly an exercise in calling items from a list and creating your dictionaries from these valuse, as you will do
+    in hw5p1. Each time you are mapping a value (eg. "even") to a key (eg. two") in this format: sampleList[0]["two"] = "even"

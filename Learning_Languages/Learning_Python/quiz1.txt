@@ -1,0 +1,13 @@
+# Grader name: Robin Bartels
+# Grader Login: Barrob16
+
+from lab2 import n
+
+i = 0
+
+while (i < n):
+        print "hello world"
+        i += 1
+
+# i=0;i<n is equivilent to
+# i=1;i</=n

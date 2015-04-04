@@ -1,0 +1,12 @@
+# Zack Raver; ravzac14
+
+from lab2.py import n
+
+if (n > 50):
+  print "n is greater than 50"
+elif (n < 50):
+  print "n is less than 50"
+elif (n == 50):
+  print "n is equal to 50!"
+else
+  print "Error: System Failure"
