@@ -1,0 +1,51 @@
+Zack Raver; ravzac14
+due Tuesday 4/7/15
+
+Book exercises 1.4, 1.5, 1.7, 1.8, 1.12, 1.15
+and
+Six simple c++ exercises workshop
+
+1.7) Prove log x < x for all x > 0
+
+base case: when x is 0, logx < x.... which is equivalent to 2^1 > 1 which is true
+
+IH: for any k > 0, log k < k, or 2^k > k
+
+RC: for some k+1 > 1, log (k+1) < k+1....or 2^(k+1) > k+1 which would always be true, as long as k < 0
+
+
+Prove: log (a^b) = b log a
+
+2^(b log a) = a^b
+
+2^log a^b = a^b
+a^b = a^b
+
+
+1.8) Evaluate these sums
+
+Sum 0->inf: 1/4i = 0
+
+Sum 0 ->inf i/4i = 0
+
+Sum 0->inf i^2/4^i = 0
+
+Sum 0->inf i^N / 4^i = inf
+
+1.12) Prove: 
+a)Sum 1->N (2i-1) = N^2
+
+1 2 3 4  5  6  7  8  9  10
+1 3 5 7  9 11 13 
+1 4 9 16 25 36 49
+
+
+b)Sum 1->N i^3 = (Sum 1->N i)^2
+
+1 9 36 100 225
+1 8 27 64 125 
+1 2 3 4  5  6  7 8 
+1 3 6 10 15 21 28 36
+1 9 36 100 225 441 
+
+
