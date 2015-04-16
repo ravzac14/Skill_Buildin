@@ -1,0 +1,107 @@
+Zack Raver; ravzac14
+
+Set 3: Exercise 3.1,3.2, 3.4, 3.5,3.6, 3.9, 3.10, 3.11, 3.22, 3.23, 3.29 
+
+3.1)
+assuming p is sorted in ascending order
+
+set index=0
+for (int i =0; i < sizeof(l); i++) 
+    if (index == p[i]){
+        print l[i]
+    ++index
+
+runs in linear time of list L
+
+3.2) in list l, you have two adjacent nodes k and j that you need to swap
+
+in a singley linked list: 
+copy = k->next
+k = j
+j = copy
+
+in a doubly linked list:
+copyN = k-> next
+copyP = k->prev
+k->next = j->next
+k->prev = j->prev
+j->next = copyN
+j->prev = copyP
+
+3.4)UNION:
+if (sizeof(l) > sizeof(k))
+    for (int i = 0; i < sizeof(k)
+        l.pushback(k[i])
+    delete k
+else
+    for (int i = 0; i < sizeof(l)
+        l.pushback(l[i])
+    delete l
+
+3.5) INTERSECTIon
+if (sizeof(l) > sizeof(k))
+    for (int i = 0; i < sizeof(k))
+        for (int j = 0; j < sizeof(l))
+            if !(k[i] == l[j])
+                k.pushback(l[i])
+    delete k
+else
+    for (int i = 0; i < sizeof(l))
+        for (int j = 0; j < sizeof(k) 
+            if !(k[i] == l[j])
+                l.pushback(k[i])
+    delete k
+
+3.6)
+
+3.9) Becuase the iterator is just a pointer, it doesnt know anything about the list while
+its past the spot of the changes
+
+3.10)
+
+3.11) 
+a) return the size of the list:
+size = 0
+current = head
+while !current->next == nullptr
+    size++
+    current = next
+b) print
+current = head
+while !current->next == nullptr
+    print current
+    current = next
+c) test if x is in the list
+bool member(Object x){
+current = head
+while !current->next == nullptr
+    if x == current 
+        return true
+    curren = next
+return false
+}
+d) add a value x if not in the list
+if !l.member(x)
+    return l.insert(x)
+else
+    return l
+e) remove x if in the list
+void deleteMember(Object x){
+current = head
+while !current->next == nullptr
+    if x == current 
+        prev->next = current->next
+        next->prev = current->prev
+    current = next
+}
+
+3.22)
+
+3.23)
+
+3.29) Is constant time for a list just linear?
+const_iterator itr = c.end()
+while (itr != c.begin())
+    print current
+    --itr
+
