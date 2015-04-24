@@ -1,0 +1,150 @@
+Zack Raver; ravzac14
+
+This is the hw on treesss
+Set 4: 
+
+4.1) tree in 4.74, which node is root and which are leaves:
+A
+[G,D,H,B,I,E,L,J,M_C,F,K]
+
+4.2) for each nod in tree 7.47; name parent, list children, list siblings, compute depth and compute height, height is 4
+A: null; B,C; Null; 4, 
+B: A; D,E; C; 3, 
+C: A; C; B; 2,
+D: B; G,H; E; 1,
+E: B; I,J; D; 2,
+F: C; K; Null; 1,
+G: D; Null; H; 0,
+H: D; Null; G; 0,
+I: E; Null; J; 0,
+J: E; L,M; I; 1,
+K: F; Null; Null; 0,
+L: J; Null; M; 0,
+M: J; Null; L; 0
+
+4.7) Suppose a binary tree has l1..lm at depths d1..dm respec. 
+Prove that Sum(1->M) 2^-dSUBi <= 1...and determine when the equality is true
+
+the limit approaches 1, but never gets there
+
+4.9) Show the result of inserting 3,1,4,6,9,2,5,7 into an empty BST
+Show the result of deleting root:
+
+3 is root
+1 is left child of root
+4 is right child of root
+6 is right child of 4
+9 is right child of 6
+2 is right child of 1
+5 is left child of 6
+7 is left child of 9
+
+deleting 3, finds min of rchild, which is 4, and that becomes new root
+
+4.11) Write an implementation of the set classm w/ iterator using BST. add to each node a link to the parent node;
+4.19) Show the result of inserting 2,1,4,5,9,3,6,7 into an empty AVL tree;
+
+2 is root h = 0 d = 0
+1 is left child of root h=1,d=0, roots d=-1
+4 is right child of root h=1,d=0, roots d =0
+5 is right child of 4, h=2,d=0,4s d=1, roots d=1
+9 is right child of 5, h=3,d=0,5s d=1, 4s d=2, roots d=2 ROTATE:
+    4 becomes new root with left child 2, whose left child is 1
+    4s right child is 5, whose right child is 9, roots d=0
+3 is 2s right child, roots d = -1
+6 is 5s left child, roots d =0
+7 is 6s right child, roots d =1
+
+4.26) Write the functions to preform the double rotation w/o the inefficiency of doing two single rotations
+
+//Given the bottommest problem node
+void LRDoubleRotate (AVLNode& root)
+{
+  AVLNode temp = root;
+  temp->right = root; //root moves to the newroots right child
+  temp->right->left = temp->left->right->right; //old root gets new roots right child
+  temp->left->right = temp->left->right->left; //roots left child gets its childs left child
+  temp->left->right = *temp; //set new root
+  
+  //Set new heights
+  temp->left->height = max(temp->left->left->height,temp->left->right->height);
+  temp->right->height = max(temp->right->left->height,temp->right->right->height);
+  temp->height = max(temp->left->height,temp->right->height);
+}
+
+//Given the bottommest problem node
+void RLDoubleRotate (AVLNode& root)
+{
+  AVLNode temp = root;
+  temp->left = root; //root moves to the newroots right child
+  temp->left->right = temp->right->left->left; //old root gets new roots right child
+  temp->right->left = temp->right->left->right; //roots left child gets its childs left child
+  temp->right->left = *temp; //set new root
+  
+  //Set new heights
+  temp->left->height = max(temp->left->left->height,temp->left->right->height);
+  temp->right->height = max(temp->right->left->height,temp->right->right->height);
+  temp->height = max(temp->left->height,temp->right->height);
+}
+
+4.27) Show the result of accessing the keys 3,9,1,5 in that order in the splay tree 10-11-12-13
+                                                                                      -4-6-8-9
+                                                                                            -7
+                                                                                          -5
+                                                                                        -2-1
+                                                                                          -3
+via zig-zag then zig-zig
+3 becomes root, with children 2 and 10
+
+via zig-zig then zig-zag
+9 becomes root, with children 8 and 10
+
+via zig zig zig zig haha:
+1 becomes root with all right children
+
+via zig zag
+5 becomes root with children 2 and 8
+
+
+4.31) Write efficient functions that take only a pointer to the root of a binTree taht tests 
+whether it satisfies the search tree order property at every node
+
+bool bstProp (BNode* root)
+{
+  if (!root->left) && (!root->right) //No children
+    return true;    
+  else
+    return (*root > *root->left) && (*root < *root->right) && bstProp(root->left) && bstProp(root->right);
+}
+
+
+4.43) Show how the tree 4.77is represented using a child/sibling link implem.
+
+a->sibs = nullptr
+a->children = [b,c,g]
+b->children = [d,e]
+b->sibs = [c,g]
+d->chilrdren = [h,i]
+d->sibs = [e]
+h->children = nullptr
+h->sibs = [i]
+i->chil = nullptr
+i->sibs = [h]
+etc
+
+4.45) Two bintrees are similar if they are both empty or nonempty and have similar right and lefy subtrees.
+Write a function to decide whether two binary trees are similar. What is the running time?
+
+this is a member function of btrees
+bool BinaryTree::isSimilar(BTree& rhs)
+{
+  //BC: both are empty or they are both nonempty
+  if (!(this->left && this->right)) && (!(rhs->left || rhs->right)) // both are empty
+    return true;
+  else if (this->left || this->right) && (rhs->left || rhs->right)// at least one of each is nonempty
+    return (*this.left.isSimilar(rhs->left)) && (*this.right.isSimilar(rhs->right);
+  else //one is nonempty
+    return false;
+}
+
+log n
