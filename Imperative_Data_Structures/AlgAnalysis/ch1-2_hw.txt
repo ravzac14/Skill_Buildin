@@ -1,0 +1,81 @@
+Zack Raver
+
+Ch 1.2:
+2) if insert sort runs in 8n^2 
+and merge sort runs in 64*nlogn...insert sort beats merge sort while n < 7
+
+
+3) 2^n vs 100n^2
+2^n beats 100n^2 until while n < 15
+
+
+Ch 2.3: 
+1) Show merge sort on 
+
+[3,41,52,26,38,57,9,49]
+[3,41,52,26] [38,57,9,49]
+[3,41] [52,26] [38,57] [9,49]
+[3] [41] [52] [26] [38] [57] [9] [49]
+[3,41] [26,52] [38,57] [9,49]
+[3,26,41,52] [9,38,49,57]
+[3,9,26,41,49,52,57]
+
+
+3) Use induction to show that when n is a power of 2 the solution to:
+T(n) = {2          if n =2
+       {2T*(n/2)+n if n=2^k, for k > 1
+
+is T(n) = n log n
+
+BC: T(2) = 2
+IH: Assuming k is a power of 2 > 2^1, then T(k) = 2 * T(k/2) + k
+RC: Assuming k*2 is a power of 2, because k is and any power of 2 times 2 is still a power of 2..
+then T(2k) = 2 * T(k) + 2k..which still holds true
+
+
+4)
+
+Insert(k) = {k is singleton -- return k, is sorted
+            {insert head(k) into tail
+
+
+
+6) Binary search in insert sort
+
+for (int j = 2; j < A.size(); j++)
+  key = a[j];
+  newList(a[0],a[j-1])
+  while (!newList.empty())
+    i = ceiling(j/2);
+    if (key >= a[i])
+      newList(a[i],a[j-1])
+    else
+      newList(a[0],a[i-1])
+  insert(a[j],newList)
+
+Ch2 Problems:
+2-2)
+a) that its defined for all values of n?
+b)
+for (i =1; i < A.size; i++)
+  for (j=(A.size -1); j > I+1; j--)
+    if (a[j] < a[j-1]
+      exchange(a[j],a[j-1])
+
+The loop invariant runs run the end of the list to the i+1, which begins at 
+the second element, and is eventually the n-1st. 
+
+Because it uses defensive programming, > and <, and even if it doesn't
+sort at all, it runs within the bound of the list
+c) inequality is equavilent to the index while != to the size of the list
+Resulting in every node being visited but not beyond.
+
+2-3) 
+a) O(n), it runs from i to n, regardless of its sideeffect
+b) 
+y = 0
+i = n
+while (i >= 0)
+  y = a[i] + x * y
+  --i
+ 
