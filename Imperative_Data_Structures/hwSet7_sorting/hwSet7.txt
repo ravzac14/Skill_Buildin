@@ -1,0 +1,51 @@
+Zack Raver; ravzac14
+
+Ch7:
+7.10) Do either of the following mods to the Shellsort routine in fig. 7.6 affect the worst case run time?
+a) before lin 8, subtract one from gap if its even
+b) before line 8, add one to gap if its even
+
+7.11) Show how heapsort processes the input 142,543,123,65,453,879,572,434,111,242,811,102
+
+7.19) Sort 3,1,4,1,5,9,2,6,5,3,5 using quicksort with median-of-three partitioning and a cutoff of 3.
+
+7.20) Using the quicksort implementation from the chapter, determine the running time of quicksoet for
+a) sorted input
+b) revers-ordered input
+c) random input
+
+7.25) The quicksort implementation in the text uses two recursive calls. Remove one as follows:
+a) rewrite the cod eso that the 2nd recursive call is unconditionally the last line
+of quicksort. Do this by reversing the if/else and returning after the call to insertSort
+b) Remove the tail recursion by writing a while loop and altering left
+
+7.36) Prove that merging two sorted arrays of N items requires at least 2n - 1 compares.
+You must show that if two elements in the merged list are consec. and from dif. lists, then compare them
+
+7.40) 
+- if there is one item, it is the max and min
+-- if there are two items, compare them and you have the max and min.
+- split the input into two halves, evenly as possible. 
+- recursively find the max and min of each half, and compare there answers
+
+a) suppose N is a power of 2. what is the exact number of compares?
+b) suppose n is of the form 3*2^k. what is the number of compares?
+c) modify the alg. as follows: when n is even, but not divisble by 4, split input into sizes n/2 -1 and n/2+1. 
+what is the number of compares?
+
+7.48) Write an efficient Shellsort and compare performance when the following increment seq.s are used:
+a) shells original seq.
+b) hibbard's increments
+c) knuths increments hsubI = 1/2(3^i + 1)
+d) Gonnet's increments hsubT = floor(N/2.2) and hsubK = floor(hsubK+1 / 2.2) with hsub1 = 1 and hsub2 = 2
+e) sedgwicks incs
+
+7.55) given an array of N numbers. Determine if there are two number whose sum equals a given number K.
+A number may be used two.
+a) give an O(n^2) alg.
+b) give an O(nlogn) alg. Hint: sort them first, then solve in linear time
+c) code both those ^ and compare run times
+
+and does so where any 3 numbers can sum the K
+
+

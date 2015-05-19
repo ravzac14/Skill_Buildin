@@ -1,0 +1,157 @@
+Zack Raver; ravzac14
+
+
+Ch 6:
+6.2) a) Show the result of inserting 10,12,1,14,6,5,8,15,3,9,7,4,11,13, and 2 into an empty bheap
+
+-10 becomes root
+-roots lchild becomes 12
+-try to put 1 as roots rchild, order prop violated so percolate up
+-- move 10 into the hole, root becomes the hole, insert 1 in hole
+- 14 becomes 12s lchild
+- try to put 6 as 12s rchild, order prop vioalted, so prec up
+-- move 12 into hole, move hole down to roots lchild, insert 6 in hole
+- try to put 5 as 10s lchild, o.p.v, perc. up
+-- move 10 to hole, move hole down to roots rchild, insert 5 in hole
+- insert 8 as 5s rchild
+- insert 15 as 14s lchild
+- try to put 3 as 14s rchild, o.p.v, perc. up
+-- move 14 to hole, try to put 3 in hole as 6s lchild, o.p.v, perc. up
+--- move 6 to hole, move hole to roots lchild, insert 3 in hole
+- try to insert 9 as 12s lchild, o.p.v, perc. up
+-- move 12 into the hole, move hole to 3s rchild, insert 9 into the hole
+- try to insert 7 as 9s rchild, o.p.v perc. up
+-- move 9 into hole, move hole to 3s rchild, insert 7 into hole
+- try to insert 4 as 10s lchild, o.p.v perc. up
+-- move 10 into hole, move hole to 5s lchild, try to insert 4 into hole, o.p.v perc. up
+--- move 5 into hole, move hole to roots rchild, insert 4 into hole
+- insert 11 as 5s rchils
+- insert 13 as 8s lchild
+- try to insert 2 as 8s rchild, o.p.v perc. up
+-- move 8 into hole, move hole to 4s rchild, try to insert 2, o.p.v perc. up
+--- move 4 into hole, move hole to roots rchild, insert 2 in hole
+
+b) Show the result of using the linear-time alg. to build a bheap using the same input
+
+- First insert all elements into tree unordered
+- Begin percolatings: 
+-- 8 and 2 swap
+-- 5 and 4 swap
+-- 14 and 3 swap
+-- 12 and 6 swap, 12 and 9 swap
+-- 6 and 3 swap
+-- 10 and 1 swap, 10 and 2 swap, 10 and 8 swap
+- Done,
+
+6.3) Show the result of performing three deleteMin's in the previous heap
+
+-Delete 1
+-- percolate down 2 into hole
+-- 4 into hole
+-- 5 into hole
+-- 10 into hole as 5s lchild
+Done
+
+-Delete 2
+-- perc down 3 into hole
+-- 6 into hole
+-- 13 into hole 
+Done
+
+-Delet 3
+-- perc down 4 into hole
+-- 5 into hole
+-- 10 into hole
+-- 11 into hole
+Done
+
+6.5) Rewrite Bheap insert by placing a copy of the inserted item in position 0
+
+void insert( const Comparable & x )
+{
+    if( currentSize == array.size( ) - 1 )
+        array.resize( array.size( ) * 2 );
+        // Percolate up
+        int hole = ++currentSize;
+        Comparable copy = x;
+        array[ 0 ] = std::move( copy );
+        for( ; x < array[ hole / 2 ]; hole /= 2 )
+            array[ hole ] = std::move( array[ hole / 2 ] );
+            array[ hole ] = std::move( array[ 0 ] );
+}
+
+6.17) Suppose that bheaps are represented using explicit links. Give the problem of merging bheaps. Assume both are perfect btrees containing 2^l-1 nodes
+
+Instead of just changing a bunch of pointers, one would have to insert every element of one heap into the other
+
+a) give an O(logn) alg. to merge the two heaps l = r
+
+-make hole root with lchild l and rchild r
+-remove max from r and insrrt into l until its full
+- percolate down to fill root
+
+b) give an O(logn) alg. to merge two heaps if |l-r| = 1
+
+-Same as above, except you just make larger one on the left,
+-remove from outer most to fill rchild until its full
+-percolate down to fill root
+
+c) Give and O(log^2n) alg. to merge two heaps regardless of l and r
+
+-Insert from larger into smaller until h(l) == h(r) and r is full
+-make hole root with l and r children
+-perc down
+
+6.19)Merge the two leftist heaps in fig. 6.59
+
+-4 becomes the rchild of 2 (the new roots)
+-5 is 4s lchild, with children 8 and 9, 
+- 6 is 5s rchild
+- swap 9 and 8...swap 4 and 11
+Done
+
+6.20) Show the result of inserting keys 1-15 into an empty leftist heap
+
+-insert 1
+-merge 2 as 1s rchild, rotate 1
+- merge 3 as 1s rchild
+- merge 4 as 3s rchild, rotate 3, rotate 1
+- merge 5 as 2s rchild, rotate 2
+- merge 6 as 2s rchild, rotate 1
+-merge 7 as 3s rchild,
+- merge 8 as 7s rchild, rotate 7, rotate 3, rotate 1
+- merge 9 as 6s rchild, rotate 6, rotate 2
+- merge 10 as 6s rchild, rotate 1
+- merge 11 as 4s rchild, rotate 4
+- merge 12 as 4s rchild
+etc
+
+
+6.26) Merge the two skew heaps in 6.59
+
+-4 becomes the rchild of 2 (the new roots)
+-5 is 4s lchild, with children 8 and 9, 
+- 6 is 5s rchild
+Done
+
+
+6.27) Show the results of inserting 1-15 into an empty skew heap
+
+the resulting tree is a path of length 14 from 1 to 15, containing 1-15
+
+
+6.31) Prove that a binomial tree of height k has (k-d) nodes at depth d
+
+A tree of height k has 2^(k+1) - 1 nodes
+
+at height 1, k = 0, and d = 0, the tree has 1-0 nodes, the root
+
+at height k, which is d
+
+
+6.32) Merge the two binomial queues in fig. 6.60
+
+- begin by merging the two 1trees, into a new 2tree 4->13
+- then merge the 2trees into a 4 tree, 4->13-->15->18
+-then merge two of the 4trees, then combine the two 8trees 
+
