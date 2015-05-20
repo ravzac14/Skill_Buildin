@@ -3,24 +3,104 @@ Zack Raver; ravzac14
 Ch7:
 7.10) Do either of the following mods to the Shellsort routine in fig. 7.6 affect the worst case run time?
 a) before lin 8, subtract one from gap if its even
+
+i should think it doesnt much affect it. And you'll be preforming this calculation every
+time, because gap is first divided by 2.
+
 b) before line 8, add one to gap if its even
+
+same ^...i mean who cares if the sequence is 9..5..3..1, instead of 8..4..2..1
+
 
 7.11) Show how heapsort processes the input 142,543,123,65,453,879,572,434,111,242,811,102
 
+first theyre put into a heap
+                            142
+                543                     123
+            65       453            879     572
+          434 111   242 811        102
+
+then you delete min for n, putting them in the new heap as you pull em out
+
+                            65
+                102                     111
+            123      142            242     434
+          453 543   572 811        879
+
+Done
+
+
 7.19) Sort 3,1,4,1,5,9,2,6,5,3,5 using quicksort with median-of-three partitioning and a cutoff of 3.
+
+3 9 5, pivot is 5
+before 1st swap (dupes)
+3,1,4,1,5,9,2,6,5,3,5
+        i         j
+after 1st swap
+3,1,4,1,3,9,2,6,5,5,5
+        i         j
+before 2nd swap (dupes)
+3,1,4,1,3,9,2,6,5,5,5
+          i j
+after 2nd swap
+3,1,4,1,3,2,9,6,5,5,5
+          i j
+i and j passed eo
+3,1,4,1,3,2,9,6,5,5,5
+          j i         
+rec. calls
+sort (3,1,4,1,3,2) ++ 5 ++ sort (6,5,5,9)
+etc
+
 
 7.20) Using the quicksort implementation from the chapter, determine the running time of quicksoet for
 a) sorted input
+should still be nlogn, since your pivot will always be approx in the middle, with no swaps
+
 b) revers-ordered input
+
+should be nlogn + n/2 (because you swap every element with its opposite in the initial partitioning)
+
 c) random input
 
+avg. nlogn
+
+
 7.25) The quicksort implementation in the text uses two recursive calls. Remove one as follows:
-a) rewrite the cod eso that the 2nd recursive call is unconditionally the last line
+a) rewrite the code so that the 2nd recursive call is unconditionally the last line
 of quicksort. Do this by reversing the if/else and returning after the call to insertSort
 b) Remove the tail recursion by writing a while loop and altering left
 
+if (left + 10 > right) {
+  insertSort(a,left,right);
+  return;
+} else {
+  const Comparable& pivot = median3(a,left,right);
+
+  int i = left, j = right - 1;
+  while (left != pivot) {
+    while (a[++i] < pivot) { }
+    while (pivot < a[--j]) { }
+    if (i < j) 
+      std::swap (a[i],a[j]);
+    else {
+      std::swap (a[i],a[right-1]);
+      quickSort(a[--i],left,right);
+      break;
+    }
+  }
+}
+
+
 7.36) Prove that merging two sorted arrays of N items requires at least 2n - 1 compares.
 You must show that if two elements in the merged list are consec. and from dif. lists, then compare them
+
+base case:
+    one of the arrays are empty, or both..requiring no compare
+rec, case:
+    neither are empty, compare the heads, put the smaller in the new array, 1 compare. You're doing this n times
+
+How is it 2n -1?
 
 7.40) 
 - if there is one item, it is the max and min
@@ -28,10 +108,23 @@ You must show that if two elements in the merged list are consec. and from dif. 
 - split the input into two halves, evenly as possible. 
 - recursively find the max and min of each half, and compare there answers
 
-a) suppose N is a power of 2. what is the exact number of compares?
+a) suppose N is a power of 2 (k). what is the exact number of compares?
+
+k splits + k compares + k compares, 3k compares 
+
 b) suppose n is of the form 3*2^k. what is the number of compares?
+
+itll always be even, until the last split, which will have a singleton and a pair
+
+2*k splits + 2*k compares + 3*k compares (comparing the singletons to the results of the rest = 7k compares
+
 c) modify the alg. as follows: when n is even, but not divisble by 4, split input into sizes n/2 -1 and n/2+1. 
 what is the number of compares?
+
+so you force everything to be even, resulting in less spluts(because no one-off singeltons) but more compares in pairs
+
+resulting in about the same time, but less space used
+
 
 7.48) Write an efficient Shellsort and compare performance when the following increment seq.s are used:
 a) shells original seq.
@@ -40,12 +133,50 @@ c) knuths increments hsubI = 1/2(3^i + 1)
 d) Gonnet's increments hsubT = floor(N/2.2) and hsubK = floor(hsubK+1 / 2.2) with hsub1 = 1 and hsub2 = 2
 e) sedgwicks incs
 
+Before sorting: [10,20,5,1,16,2,12,7,3,9,11,0,15,13,8,6,17,19,18,4,]
+Shells: 
+Time taken: 5e-06
+After sorting: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,]
+zack@zacks-taplop:~/Github/Skill_Buildin/Imperative_Data_Structures/hwSet7_sorting$ ./test
+Before sorting: [10,20,5,1,16,2,12,7,3,9,11,0,15,13,8,6,17,19,18,4,]
+Hibbards: 
+Time taken: 3e-06
+After sorting: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,]
+zack@zacks-taplop:~/Github/Skill_Buildin/Imperative_Data_Structures/hwSet7_sorting$ ./test
+Before sorting: [10,20,5,1,16,2,12,7,3,9,11,0,15,13,8,6,17,19,18,4,]
+Knuths: 
+Time taken: 1.2e-05
+After sorting: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,]
+zack@zacks-taplop:~/Github/Skill_Buildin/Imperative_Data_Structures/hwSet7_sorting$ ./test
+Before sorting: [10,20,5,1,16,2,12,7,3,9,11,0,15,13,8,6,17,19,18,4,]
+Sedgewickss: 
+Time taken: 1.1e-05
+After sorting: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,15,16,17,18,19,20,]
+
 7.55) given an array of N numbers. Determine if there are two number whose sum equals a given number K.
 A number may be used two.
 a) give an O(n^2) alg.
+
+for (int i = 0; i < a.size(); i++)
+{
+  for (int j = 0; j < a.size(); j++)
+  {
+    if (i + j == k) 
+      return i+j;
+  }
+}
+
 b) give an O(nlogn) alg. Hint: sort them first, then solve in linear time
+
+quickSort(a);
+for (int i = 0; i < a.size(); i++);
+  if (i + (a[a.size() - i]) == k)
+    return true
+
+
 c) code both those ^ and compare run times
 
 and does so where any 3 numbers can sum the K
 
+easier once sorted
 
