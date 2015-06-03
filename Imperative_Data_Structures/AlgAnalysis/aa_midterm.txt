@@ -1,0 +1,224 @@
+
+
+1) Using the Master theorem to give the complexity of the follwoing:
+
+a) T(n) = 3T(n/4) + nlogn
+
+a = 3, b = 4, f(n) = n log n..
+n^logsubb*a = n^logsub4*3 = O(n^.793)
+
+since f(n) is elem of Ohm(n^logsub4*3+E) where E is approx. .2 
+you can take case 3 of the master thereom so T(n) = Ohm(n log n)
+
+
+b) T(n) = 3T(n/3) + n/2
+
+a = 3, b = 3, f(n) = n/2
+n^logsubb*a = n^logsub3*3 = n, which is not polynomially larger than f(n) and
+therfore we cannot appluy the masters theorem
+
+
+c) T(n) = 4T(n/2) + n/logn
+
+a = 4, b =2, f(n) = n / log n
+n^logsubb*a = n^log2*4 = n^2
+
+since f(n) is elem of Ohm(n^log2(4 - E)) where 2 < E < 3
+you can take case 1 of the master theremo so T(n) = Ohm(n^log2(4))
+
+
+d) T(n) = 64T(n/8) + n^2logn
+
+a = 64, b =8, f(n) = n^2*logn
+n^log8(64) = n^2
+
+Now with realy large N (>6000) f(n) grows MUCH faster than n^2,
+which makes me case 3 is applicable..however i couldnt find the exact E
+, so Im not sure if its case 1 or 3 (certainly not cse 2)
+Either T(n) = Ohm(n^log8(64)) or Ohm(n^2*logn)
+
+
+2) For parts a, b and c above,
+
+a) draw the recursion tree
+b) Use the recursion tree to derive a guess
+c) use the substitution method to prove your guess correct
+d) confirm that it is the same answer as above
+
+These are 
+In scanned documents
+
+
+3) For this alg:
+
+RecPow (b,p,n) {
+    if (p == 0)
+        return 1;
+
+    q = RecPow (b, p/2, n);
+
+    if (p % 2 == 0)
+        return (q*q) % n;
+    else
+        return (b*q*q) % n;
+}
+
+You can assume that p is a powerr of 2m but if not, use int division. The input is a real
+number b, and ints p>= 0 and n>1. The result is b^p: multiply p copies of b, mod n,
+
+So 5^3 % 13 = 8
+
+a) develop the loop invariant and prove that the alg. is correct
+
+Init: If p is positive, recpow will be called, if its zero you hit the end of the rec.
+stack. Therefore its true as long as the input is nonnegative
+
+Maintenence: If its true initially, it will be true next time (because int division
+by two will never yield a negative number)
+
+Termination: The last call to rec term will be 1/2 which will give p=0, returning 1
+which is the multiplicative identity, allowing the previous rec. call to return b
+
+
+b) Write the rec. equation for its complexity
+
+T(n) = { Theta(1)       if p = 0
+       { T(p/2) + n     if p > 0 (assuming its a power of two)
+
+
+c) give its complexity in asymptotic notation and demonst. the constats for which
+your claim is correct. (determine if you should use, bigO, bigTheta, bigOmega
+
+a = 1, b = 2 f(n) = n
+n^log2(1) = n^0 = 1
+
+The 3rd case of the masters thereom works if E = 1
+therefore Theta(n)
+
+
+4) do 2 of these 3
+
+a) p167, prob. 6.3) An mxn Young tableau is an mxn matrix such that the entries of each row are
+in sorted order from l-r and the entries in each column are in sorted order from top to bottom.
+Some of the entries may be inf, which we treat as empty. Thus, a young ableau can be used to hold r <= mn
+finite numbers
+
+    a) draw a 4x4 young tableau containg {9,16,3,2,4,8,5,14,12}
+
+In scanned documents
+
+    b) Argue that an mxn YT Y is empty if Y[1,1] = inf. Argue that Y is full(contains mn elements) if Y[m,n] < inf
+
+I guess it depends on how they are filled. If they get filled like a hash table with linear probing, then
+you could make the argument that if Y[1,1] is empty, its empty. And similarly is Y[M,N] is filled,then it 
+is full. 
+
+    c) Give te alg. to implement extract-min on a non-empty YT that runs in O(m+n) time. Should use
+    rec. subroutines that solves an mxn problem by rec. solving either an (m-1)xn or an mx(n-1) subproblem. 
+    (think about max-heapify). Define T(p) where p = m+n, to be the max run time. Give and solve a rec. for T(p).
+
+findMin (array[m][n] Y)
+    array[n+1] mins;
+    for (int i = 0; i < mins,size(); i++)
+        mins[i] = findSingleMin (Y[][i]);
+    return findSingleMin(mins[]);
+
+findSingleMin(array[i] R)
+    auto min = inf;
+    for (auto x in R)
+        if x < min
+            min = x
+    return x
+
+    d) Show how to insert a new element into a nonfull mxn YT in O(m+n) time
+
+insert (x)
+    countN = 0;
+    while (x > Y[0][countN])
+        countN++;
+    countY = 0;
+    while (x > Y[countY][countN])
+        countY++;
+    //Check to see if that row is full
+    if (Y[countY].isFull())
+        insert Y[Y[countY].size()-1][countN];
+    else
+        for (int i = Y[countY].size() - 1; i >= countY; i++)
+            Y[i+1][countN] = Y[i][countN];
+    Y[countY][countN] = x;
+Done
+
+    e) using no other sorting methods as a subroutine, show how to use an mxn YT to sort n^2 numbers in O(n^3) times
+
+shiftDown (array[] N)
+    int i = 0 
+    while (N[i] = inf)
+        k = i+1;
+        for (; k < N[].size(); k++)
+            move(k, k-1);
+        i++;
+
+sort (array[][] Y, n=0)
+    if (array[0][n] = inf)
+        return /0;
+        
+    x = pop[0][n];
+    shiftDown(Y[0][n]);
+    
+    if (array[0][n-1].isNotEmpty)
+        x ++ sort array([0][n-1]
+    else
+        x ++ sort array([0][n-1]
+
+
+b) p187, prob 7.3) Stooge sort
+
+if a[i] > a[j]
+    then swap a[i],a[j]
+
+if i+1 >= j
+    return
+
+k = floor(j-i+1) / 3;
+stoogesort(a,i,j-k); //SORT first 2/3
+stoogesort(a,i+k,j); //sort last 2/3
+stoogesort(a,i,j-k); //sort first 2/3 again
+
+    a) argue that if n = len(a), then stoogesort(a,1,leng(a)) correctly sorts the input
+
+this would indeed sort input
+
+init: this would would work on any size array, if it were one elem, it would return immediately.
+Otherwise it would begin preforming swaps and recursively calling itself
+
+maintenence: if its a two item array (which it would be eventually after recursively being called,
+it would sort that input 3 times. Should never redo work, so often during its calls it woulld just 
+return after checking the GT relation. 
+
+termination: if the input is sorted, this would terminate, as for all i->j, no swaps would occur and it
+would return
+
+
+
+    b) give a rec. for the worstcase run time of the above and a tight asymp. bound
+
+T(n) = 3(5n/3) + 3
+
+a=3, b=5/3 , f(n) =1
+nlog5/3(3) = n^2.15
+this fits the case 1 when E = 1.15, resultin in n^0 = 1
+Theta(n^2)
+
+    c) compare the worst case run time of stoogesort with that of insert, merge, heap and quick
+
+Stoogesorts worst case is the same as its best case n^2, you're simply missing the swaps which happen in 
+constant time anyway. The "worst" case would be a sorted list, as far as wasted time.
+
+Insert sort worst case is the opposit of stoogesort, where you're given an already sorted list, in reverse. Wasting
+a lot of time and swapping every element, making its worst case n^2
+
+Merge sort has the benefit of always being nlogn, because you're only spending log n time merging, regardless 
+of input, because a 1 element list is sorted.
+
+Quicksort's worst case depends on its implementation, but if you're pulling the pivot off the front
+its worst case is n^2 because you end up with very unbalanced subproblems. 

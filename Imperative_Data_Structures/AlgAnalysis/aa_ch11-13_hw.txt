@@ -1,11 +1,60 @@
 Eith ch11 or 13
 
-p255 11.1-4
-p261 11.2-6
-p269 11.3-3
-p282 11-1
+p255 11.1-4) Implemenet a dictionary on top of a huge array, Describe a scheme
+such that search, insert, delte should take O(1), and each object only takes O(1) space.
+Use an additionaly stack. whose size is the # of keys stored. To help determin if 
+a given entry is valid.
 
-p311 13.1-3
-p314 13-2.4
-p322 13.3-4
-p33- 13.4-7 and -6
+So the idea would be, take the input, hash it check to see if the stack is <a.size()/4,
+if so put the entry into the array via its hash. otherwise hash again and then drop it in.
+
+search you'd check the stack size and hash the search that many times before grabbing it
+
+delete youd decrement the stack size
+vice versa for insert
+
+
+p261 11.2-6) Show that if abs(U) > nm, theres a subset of size n where all elements
+hash to the same slot.
+
+This is simple, because of the property that n could be 1, for any hash table (or 0).
+So the base case holds.
+
+Otherwise there is an opportunity for larger n, resulting in O(n) for chained hashes 
+(the time to find the first item inserted into that bucket) 
+
+
+p269 11.3-3) Consider a version of the division method in which h(k) = k mod m, where
+m = 2^p - 1 and k is the character strnig interpreted in ardic 2^p. Show that if string x
+can be drived from string y by permuting its characters, then x and y hash to the same valye. give an ex. i
+which this would be a bad hash.
+
+so the way that strings would work in this case, is addin gthe values of there asci characters
+and dividing that by m, were m is 2^p - 1. (meaning there are some power of 2 entries). These permutated strings
+would hash to the value because of communativitey in adding the string values. And this would
+pose a particular problem in a 2^P hash table, because they may never re-hash and you'd get errors
+
+
+p282 11-1) A hash table of size m us used to store n  items, with n <= m/2. Open addressing
+is used for collision resiltuions. 
+a) assuming uniform hashing, show that for i==1,2...n the probabilty that the ith insertions reuires 
+strictly k mor probes is at most 2^-k. 
+
+The two comes from there being about a half full hash tbale. as you insert you are more and more likely
+by a power of 2, to run into a probe. 
+
+b) Show that for i = 1,2..n the probbaluty that the ith insert requires 2lgn probes is at most 1/n^2
+
+This comes from the propert that your chance for probes doubles every time, and number of probes doubles every 4th time.
+Giving you a sort of binary decision tree on if youre going to probe and how often. 
+
+c) show that Pr{X > 2lgn} <= 1/n
+This is saying that at most youre going to have 1/n probes to deal with on any given insert. 
+This follows if on average youll have 1/n^2, youre worst case will be exacyly
+one order of magnitude greater than the avg.
+
+d) show that the expected length E[X] of the longert probe seq. is logn:
+
+if the input takes 1/n probes, this path down the decision tree marked in b, would be the height of the tree,
+    which is logn.
+

@@ -1,10 +1,106 @@
 
-p194 8.1-4
-p197 8.2-4
-p200 8.3-2
-p204 8.4-2
-p206 8-3 or 8-4
-o215 9.1-1
-o219 9.2-1
-p223 9.3-8 9.3-9
-p224 9-2
+p194 8.1-4) Given n to sort. Consists of n/k subseq. ach containing k elements. 
+The elements in a given subseq are smaller than the next subseq, Thius all that is needed to sort the
+while seq of n, is to sort the k eles in each subseq. Do it in nlogk
+
+k = length of subseq
+sort (array n)
+    if n = k 
+        quicksort(n)
+    else
+        f = n[0..n/2-1]
+        h = n[n/2..n-1]
+        sort(f)
+        sort(g)
+
+Done
+
+
+p197 8.2-4) Decribe an alg. that given n ints. of ranger 0-k. preprocesses its input and
+then answers ant query about how many of the n ints fall into a range[a..b] in o(1) time. Your alg. should use
+bigTh(n+k) time
+
+count = 0
+for each x in n
+    if x memberof range
+        count++
+return count
+
+
+p200 8.3-2) Which of the following are stable?
+
+If the best case and worst case arent out of the same equib class. And you dont use more than double the space
+
+insert. heap. merge. are stable
+
+
+p204 8.4-2) What is the worst case run time for bucket sort. What simple change
+preserves its linear expected run time and makes its worst case nlogn?
+
+worst case is it inserts the first array backwards, or near backwards into list b
+making it n^2
+
+maybe oding merge osrt or whatever is smarter for already sorted lists
+
+p206 8-3) Suppose you are given n red and n blue jugs of diff, shapres and sizes. All red jugs hold diff.
+amounts, as do the blue. For every red jug, there is a blue that holds the same.
+
+Fubd a grouping of the jugs into pairs of red and blue that hold the same. You have the following ops:
+pick a pair of jugs in which one is red and one if blue, fill the red jug with water, then pour the water into the blue;
+takes 1 unit time.
+
+a) desc. an bigTh(n^2)
+
+fill red jug,
+poor into unused blue jug
+if fits
+    lose both jugs
+    go to next red
+else 
+    go to next blue
+
+b) prove the lower bound of bigOm(nlogn) 
+
+if you choose the correct blue jug every time, the pool will always be smaller by 1, so youll be choosing log n jugs
+    for n red jugs
+
+c) give a randomized alg. whose expected # of compares is nlogn. and prove the bound is correct. What is worst case?
+
+see above (randomly choosing red buckst from available buckets)
+
+o215 9.1-1) Show the second smallest element of n elements can be found with n+ceil(logn) - 2 compares worst case.
+
+s, f = 0
+for each x in n
+    els if x > s 
+        if x > f
+            f = x
+            break
+    s = x
+
+return s
+
+This will only go and compare first if its larger than second, which sohuld rarely happen
+
+
+o219 9.2-1) Show the randomized select, no rec. call is ever made to a 0-len array. 
+
+it checks for size
+
+p223 9.3-8) Let x[1..n] and y[1..n] be arrays, each containg n numbers already sorted. give an o(logn) time to find
+the median of all 2n elements in arrays x, y
+
+NOt sure, maybe grab only the few middle numbers, and find median of those?
+
+
+9.3-9) pipe connecting n wells. from each well, a pipe is to be connected to the main pipe along the shortest path (either N or S).
+Given x and y coords, of the wells how should you pick the optimal locations of the main pipe. Show how to determine this
+in linear time
+
+
+add all northern pipes distances together, same for southern
+N and S
+if N/# of northen pipes < S/#of southern pipes
+    place farther north
+
+

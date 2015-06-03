@@ -1,7 +1,78 @@
 
-p 166: 6.5-6, 
-p167: 6-1 6-2
-p178: 7.2-1, 7.2-5
-p180 7.3-1
-p184: 7.4-2
-p185 7-2 7-4
+p 166: 6.5-6) Argue the correctness of heap-inc-key using the following loop inb:
+At the start of each iter of the while loop of line 4-6m the array a[1..a.size()] satisfies
+the max-heap prop, except that there may be one violation a[i] may be larger than a[i]->parent
+
+this will indeed terminate. And the heap property will be held, as all nodes i will be <
+their parent[i]
+
+
+p167: 6-1) Building the heap using insert. The proc, build-max-heap can be omplemented by repeatedly using max-heap-insert to 
+insert into the heap. consider this:
+
+a.size() = 1
+for (i=2; i < a.size())
+    do max-heapinsert(a,a[i])
+
+a) do the proc. always creat the same heap? prove of disprove:
+
+no, because the insert will always insert in the first smallest spot (which is how the holes
+percolate up) if the numbers are equal but in a different order in the input
+array, the tree will be different. However, this also shows that given indentical
+input will result in an identical tree
+
+
+b) show that the worst case requires nlogn time to build an n element heap
+
+if the array is ordered from least to greatest, you will have to traverse the whole tree (time
+is log n) for each element n..nlogn
+
+
+6-2) a d-ary heap 
+a) how would you represent a d-ary heap in an array
+
+same way you would as a binary heap? only you know the parents are n/d from their child n..
+
+b) what is the height of a d-ary heap of n elements in terms of n and d?
+
+logbased n
+
+c) give an efficient implem. of extract-max in a d-ary-max-heap. Analyze
+
+make a hole at the root
+while (there exists a hole in the tree)
+    max (i...i[d]) //max of the chilrden of hole into the hole     
+    hole goes where that ^ node was
+    if (no other children)
+        continue
+
+
+d) give an efficient insert (such that you would with heaps
+
+create a hole at the most available spot. 
+while (holey
+    check to see if n in that hole violates heap order prop
+    if not 
+        continue
+    else
+        put parent of hole into hole
+        move hole to parent
+
+p178: 7.2-1) Using the sub ethod to prove that the rec. T(n) = T(n-1) + bigOm(n) has the solution
+T(n) = bigOm(n^2),
+
+there will be n calls to T, each costing best case n
+therefor best case you have n, n times = n^2
+
+
+p180 7.3-1) Why do we analyze the avgcase performance of a random alg. and not the worst? 
+
+Often yields a simpler analysis
+
+p184: 7.4-2) Show that quicksorts best case us nlogn)
+
+assuming you dont have to do any swaps, and the partitioning splits the arrays evenly every time:
+
+you have log n splits, and n compars = nlogn
+
+

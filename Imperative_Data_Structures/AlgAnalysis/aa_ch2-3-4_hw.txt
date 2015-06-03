@@ -1,6 +1,108 @@
 
 p52 3.1-1, 3.1-2
 
-p60 3.2-1, 3.2-2, 3-1, 3-3, 3-4
+3.1-1) Let f(n) and g(n) be asy. nonneg funct. Using the basic definition of bigOmn not. prove
+that max (f(n),g(n)) = bigOm(f(n)+g(n))
+
+since big OHM is the lower bound for a function, the max for any particular n would always be >=
+than f(n) and g(n). Also, if it was = to the lower bound for either, it would be 0 for the other
+resulting in Ohm(f(n) + g(n))
+
+
+3.1-2) Show that any real constants a nd b where b> 0
+(n+a)^b = bigOm(n^b)
+
+adding any linear numbers onto n will only result in a linear growth for the lower bound. However,
+adding an exponential number will grow the lower bound exponentially as well
+
+
+p60 3.2-1, 3.2-2, 3-3, 3-4
+
+3.2-1) Show that if f(n) and g(n) are monotonically incr. functions, then so are the functions
+f(n) + g(n), and f(g(n)). and if f(n) and g(n) are in addition nonneg. then f(n) * g(n) is monot. incr.
+
+if f(n) and g(n) are monotonically increasing, means that the value of a positive int. m, f(m+n) > f(n)
+    and g(m+n) > g(n), therefore surely if both f(n) and g(n) are positive f(n+n) + g(m+N) > f(n) + g(n)
+
+similarly if both are nonneg. then f(m+n) * g(m*n) > f(n) * g(n)
+
+
+3-3) Rank the following functions by order of growth 
+a)
+[1]
+[lg(lg*n), nlogn, lnlnn, log*logn, log*n, lnn]
+[n, n^lglgn, lg^2n]
+[2^sqrt(2lgn), log(n!)]
+[2^n,3/2^n, e^n,4^lgn, n*2^n]
+[2^2^n, 2^2^n+1]
+[n!, (lgn)!,(n+1)!]
+
+b) Give an ex. of a single nonneg function f(n) such that for all functions in a, f(n) is neither O(fa(n)) or bigOm(fa(n))
+
+Give an array, and an input k, find 3 numbers such that their sum = k
+
+
+
+3-4) Asym. notation props. Let f(n) and g(n) be asymp. pos. functions. Prove or disprove
+each:
+
+a) f(n) = O(g(n)) implies g(n) = O(f(n))
+
+not necessarily, f(n) is greater than eq to g(n), so this is untrue unless g(n) = f(n)
+
+b) f(n) + g(n) = bigTheta(min(f(n),g(n)))
+
+this cant be true, because the lowest avg case between f(n) or g(n) can only be equal to 
+f(n) + g(n) if theyre inversely sypmtotic or if one is zero.
+
+
+d) f(n) = O(g(n)) -> 2^f(n) = O (2^g(n))
+
+this is true, as you increase the set of worst case functions by a power of 2,
+all members of the set are increased by a power of 2
+
+e) f(n) = O((f(n))^2)
+
+This cant be true
+
 
 p107 4-1, 4-2, 4-4
+
+4-1) Rec. ex. give the asym upper and lower bounds for T(n) in each:
+a) T(n) = 2T(n/2) + n^3
+
+O(n^3logn^3)
+BigOhm(n^3)
+
+b) T(n) = T(9n/10) + n
+
+O(nlogbase10n)
+Ohm(n)
+
+
+4-2) An aray a[1..n] contains all ints from 0-n except 1. The elements in a are repr. in binary
+and the only operation we can use to fetch the jth bit of a[i], which takes constant time.
+
+Show that if we use only this opm we can still determine the missing int in O(n):
+
+count = 0
+i = 0
+for (; i < a.size(); i++)
+    if (i == count)
+        return true
+    count = getNextBinary(count);
+return false
+
+4-4) Rec ex.
+
+a) T(n) = T(n-2) + 2lg n
+
+Ohm(lgn)
+O(log^nn)
+
+b) T(n) = sqrt(n)T(sqrt(n)) + n
+
+Ohm(n)
+O(ln^lnnn*n)
+
+

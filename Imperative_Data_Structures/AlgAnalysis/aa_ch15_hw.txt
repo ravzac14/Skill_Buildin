@@ -1,5 +1,70 @@
-p370 15.1-1 -2
-p378 15.2-4
-390 15.3-5 -6
-p396 15.4-4
-p404 15-1
+p370 15.1-1) Show how to modify the PRINT-STATIONS procedure to print out the tstaions in onc. order of 
+station number.
+
+the for loop would be a while loop, while array.size > 1 rec. call print
+else print a[]
+
+
+-2) Use eq 5.18 and 5.19 and the sub method to show that rsubi(j) the # of refr. made to
+fsubi[j] in a rec. alg equals 2^n-j
+
+the larger the set, the more often an element will be called as part of a subset,
+in this case by dividing the problem in half yields 2^n-j times an item would be called
+from the original set
+
+
+p378 15.2-4) Let R(i,j) be the # of times that table entry m[i,j] is ref. while
+computing otehr table entries in a call of MATRIX-CHAIN-ORDER. Show that the total # of ref. for the
+entire table is SUM(i->1)SUM(1->jR(i,j) = n^3 - n / 3
+
+because you have n^3 calls if you did worst case matrix mult, this efficient mult misses n case
+of the original worst case, and runs through inc and pairwise, resulting
+in the div 3
+
+
+P390 15.3-5) Describe how assembly line scheduling has overlappng subproblems
+
+A car is made by one pass through, the subproblem being how the time is managed in the factory.
+So you're checking more than once, if a car should pass through a particular path. at 1b,
+should care go 2b-3b-4b, yes continue on to 2b..at 2b should care go 3b-4b? No, go 3a..
+You are checking if it needs to go to 4b several times, instead of lazily evaluating it
+as you continue
+
+
+p396 15.4-4) Give an O(n^2) alg to find the longest monotonicallu inc.
+sunseq of a seq of n numbers.
+
+longest-subseq(array[] n)
+    array[][] increasers;
+    k = 0
+    for i each n
+        if ! array[k][i]
+            array[k][i] = n[i]
+        else
+            if n[i] > array[k][i-1]
+                array[k][i] = n[i]
+            else
+                k++
+    longest = null;
+    for each j in increasers
+        if j.size > longest.size
+            longest = j
+    return longest
+
+p404 15-1) Bitonic travelin salesman
+
+travel (n start, set verts)
+    array[] route;
+    int i = 0;
+    route[i] = start;
+    while (exist a vert > route[i]) // is left of
+        for j in leftvert
+            if is closest to route[i]
+                i++
+                route[i] = j
+    while (route[i] != start)
+        for k in remaining verts
+            if is closest to route[i]
+                i++
+                route[i] = k
+return route
