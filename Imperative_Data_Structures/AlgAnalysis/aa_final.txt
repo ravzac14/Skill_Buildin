@@ -1,0 +1,172 @@
+Zack Raver; ravzac14
+
+1) For the recurrence:
+
+T(n) = 7T(n/3) + n^2
+
+a) draw the recurrence tree
+b) Formulate your guess
+
+On the scanned documents
+
+c) Use the substitution method to confirm your guess
+
+Guess n^2(log6n^2)^n^2
+
+T(n) = 7T(n/3) + n^2
+     <= cn/3^2 (log 6n/3^2)^n^2 + n^2
+      = cn^2logn^2 - n^2log 2 + n^2
+      = cn^2logn^2 -n^2 + n^2
+      <= cn^2 log n^2
+
+n^2 * (log 6n^2)^(n^2)
+     
+
+d) Use the masters thereom:
+
+a = 7, b = 3, f(n) = n^2
+n^log3(7) = n^2 = f(n)
+
+Because f(n) and are in the same complexity level n^2, case
+2 of the master thereom applies giving us 
+T(n) = BigTheta(n^2)
+
+
+2) You are given n types of coin denominations of values v(1) < v(2) < ... < v(n), all ints.
+Assume v(1) = 1, so you can always make change for any amount of money C. Goal: make
+change for amount of money C, using as few coins as possible.
+
+a) Show that this has the optimal substructure property.
+
+The number of total solutions is divided into two set
+1) ones that have at least on of the largest coin v(n)
+2) ones that dont
+
+giveChange(int[] v, int C, int n) = 
+    giveChange(int[] v, C, n-1) which is case 2
+    and giveChange(int[] v, C-v[n], n) which is case 1
+
+this shows its solvable by solving its subproblems
+
+
+b) Write an algorithm using dynamic programming to solve this problem.
+
+this returns the number of solutions
+
+giveChange (int[] v, int C, int n) {
+    if (C == 0)
+        return 1;
+    if (C < 0)
+        return 0
+    if ((n < 0) && (C > 0)) //this isn't possible to have  solution, no coins
+        return 0;
+    
+    return giveChange(v, C, n-1) + giveChange(v, C-v[n], n);
+}
+
+c) Since this is a choice problem, show how many choices you need to consider for each coin.
+
+you're visiting each coin C times when you split the solutions. 
+Alternatively it follows the code above better to say you're modding C by either 1 or max(v)
+by length v, which is n
+
+d) Using the number of choices, give the complexity of the algoritm.
+
+Therefore, worst case you're getting O(nC) 
+
+
+3) Huffman codes:
+
+i) A prefix code is a prefix-free encoding of a character set.
+ii) Prefix free binary encodings correspond to placing the characters into leaves on some binary tree
+iii) The number of bits required to encode a string from a character set C using a binary prefix
+    code T is given by:
+
+        B(T) = Sum(c->C) f(c)dsubT(c)
+
+    where f(c) is the number of times the character c occurs in the string and dsubT(c) is the depth
+    of the leaf containing c.
+iv) An optimal binary prefix code for a string is given by a tree T such that the value of B(t) is minimal 
+    for that string.
+
+a) Show that the prefix free encoding has the greedy choice property.
+
+so you can build up the huffman tree from given input in the form 
+
+[(c0,x0),(c1,x1),(c2,x2),...,(cn,xn)]
+
+where c is a character from C, and x is the weight of that character in the string, where x0 <= x1 <= x2 <= ... xn
+and you can greedily take from the head an place at the next leaf once youre leaves are filled (you know the 
+depth of the tree from the calculatable equation based on sum of weights of characters in C), you begin to fill the 
+parents. Always grabbing what looks best (the head pf the array in this case).
+
+b) How should the choices be organized? 
+
+As I said above, you can pull the lowest weight and begin filling your binary tree based on its depth, from the deepst bits first
+
+ex. string = "dogs love dogs", so the input would look like [(v,1),(e,1),(l,1),(d,2),(g,2),(s,2),(' ',2),(o,3)]
+
+you have 8 elements in C, requiring 8 leaves in the huffman tree 
+
+pull v, put it at a leaf        
+    
+
+                                /
+                                v(1)
+
+pull e put it at the next leaf
+
+                                  2
+                                /   \
+                               v(1) e(1)
+
+pull l put it at the next leaf
+
+                                  2           k
+                                /   \       /
+                               v(1) e(1)  l(1)
+pull d
+
+                                                    
+                                            /               
+                                        5
+                                    /       \
+                                  2           3
+                                /   \       /  \
+                               v(1) e(1)  l(1) d(2)
+pull g
+
+                                            /                  \
+                                        5                       ?
+                                    /       \               /       \
+                                  2           3           ?           ?
+                                /   \       /  \        /   \       /   \
+                               v(1) e(1)  l(1) d(2)   g(2)
+
+pull s
+
+                                            /                  \
+                                        5                       ?
+                                    /       \               /       \
+                                  2           3           4           ?
+                                /   \       /  \        /   \       /   \
+                               v(1) e(1)  l(1) d(2)   g(2) s(2)
+pull space
+
+                                            /                  \
+                                        5                       ?
+                                    /       \               /       \
+                                  2           3           4           ?
+                                /   \       /  \        /   \       /   \
+                               v(1) e(1)  l(1) d(2)   g(2) s(2)  ' '(2)
+
+pull o
+                                                    14
+                                            /                  \
+                                        5                       9
+                                    /       \               /       \
+                                  2           3           4           5
+                                /   \       /  \        /   \       /   \
+                               v(1) e(1)  l(1) d(2)   g(2) s(2)  ' '(2) o(3)
+
+done
